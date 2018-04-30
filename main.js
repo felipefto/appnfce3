@@ -37,7 +37,7 @@ function createWindowLoad(){
         slashes: true
         
     }))    
-    win.webContents.openDevTools()    
+    //win.webContents.openDevTools()    
     win.on('closed', () => {win = null;});
     
 }
@@ -84,6 +84,29 @@ function createWindowMain () {
         protocol: 'file:',
         slashes: true
     }))   
+    win.on('maximize', (e) => {
+        e.sender.webContents.send('updateD')
+    })
+    win.on('unmaximize', (e) => {
+        e.sender.webContents.send('updateD')
+    })
+    win.on('restore', (e) => {
+        e.sender.webContents.send('updateD')
+    })
+    win.on('close', (e) => {
+        
+        var response = electron.dialog.showMessageBox(e.sender, 
+        {
+            type: 'question', 
+            title : "Sair", 
+            message: 'Deseja sair do sistema?', 
+            buttons: ['Cancel', 'Ok'] 
+        });
+        if(response === 0){
+            e.preventDefault();
+        }
+    })
+   
     //win.setMenu(null) ;
     // Abre o DevTools.
     //win.webContents.openDevTools()    
@@ -154,6 +177,19 @@ app.on('activate', () => {
     }
 })
 
+ipcMain.on('minimize', (event, arg) =>{
+    electron.BrowserWindow.fromId(arg).minimize();
+});
+
+ipcMain.on('maximize', (event, arg) =>{
+    electron.BrowserWindow.fromId(arg).maximize();
+});
+
+ipcMain.on('restore', (event, arg) =>{
+    electron.BrowserWindow.fromId(arg).restore();
+});
+
+
 ipcMain.on('createWindowMain', (event, arg) => {    
     
     createWindowMain();
@@ -168,20 +204,8 @@ ipcMain.on('closeApp', (event, arg) => {
     electron.BrowserWindow.fromId(arg).close();
 })
 ipcMain.on('showDialogCloseApp', (event, arg) =>{
-    electron.dialog.showMessageBox(electron.BrowserWindow.fromId(arg), 
-    {
-        type: 'question', 
-        title : "Sair", 
-        message: 'Deseja sair do sistema?', 
-        buttons: ['Cancel', 'Ok'] 
-    },
-    (response) => {
-        console.log(response);
-        if(response === 1){
-            electron.BrowserWindow.fromId(arg).close();            
-        }
-    }    
-    );
+
+    electron.BrowserWindow.fromId(arg).close();      
 });
 
 ipcMain.on('showDialogChangeUser', (event, arg) =>{

@@ -1,6 +1,8 @@
 import { Component, AfterViewChecked, ChangeDetectorRef, AfterViewInit} from '@angular/core';
 import { Router } from '@angular/router';
+
 import { ElectronService } from 'ngx-electron';
+import { delay } from 'q';
 
 @Component({
   selector: 'app-load',
@@ -18,29 +20,46 @@ export class LoadComponent implements AfterViewInit {
   }
 
   ngAfterViewInit () {
-    var localIP = this.electronService.ipcRenderer.sendSync('getLocalIP', this.electronService.remote.getCurrentWindow().id);
+    
+    setTimeout(() => {
 
-    let isLoad = false;
-    const checkDB = this.electronService.ipcRenderer.sendSync('checkDB', this.electronService.remote.getCurrentWindow().id);
-    if ( !checkDB ) {
-      this.message = 'Criando arquivos de banco de dados...';
-      this.cdr.detectChanges();
-    } else {
-        this.message = 'Verificando atualizações de banco de dados no servidor...';
+      var localIP = this.electronService.ipcRenderer.sendSync('getLocalIP', this.electronService.remote.getCurrentWindow().id);
+
+      let isLoad = false;
+      const checkDB = this.electronService.ipcRenderer.sendSync('checkDB', this.electronService.remote.getCurrentWindow().id);
+      
+      if ( !checkDB ) {
+        this.message = 'Criando arquivos de banco de dados...';
         this.cdr.detectChanges();
-      let hasUpdate = true;
-      //var hasUpdate = db.checkUpdate();
-      if ( hasUpdate ) {
-        this.message = 'Atualizando banco de dados local com ip (' + localIP.toString()  + ')...';
-        this.cdr.detectChanges();
-        isLoad = true;
+      } else {
+          setTimeout(() => {
+
+            this.message = 'Verificando atualizações de banco de dados no servidor...';
+            this.cdr.detectChanges();
+            let hasUpdate = true;
+            
+            //var hasUpdate = db.checkUpdate();
+            if ( hasUpdate ) {
+              
+              this.message = 'Atualizando banco de dados local com ip (' + localIP.toString()  + ')...';
+              this.cdr.detectChanges();
+              isLoad = true;
+            }
+            
+          }, 1000);
+         
+      }
+      setTimeout(() => {
+        if ( isLoad ) {
+          this.electronService.ipcRenderer.send('createWindowLogin', this.electronService.remote.getCurrentWindow().id);
         }
-    }
-
-    if ( isLoad ) {
-      this.electronService.ipcRenderer.send('createWindowLogin', this.electronService.remote.getCurrentWindow().id);
-    }
-    console.log('Teste2' +  checkDB);
+      }, 2000);
+      
+          
+        
+    }, 500);
+   
+    
     /*
     setTimeout(() => {
     }, 2000);*/
