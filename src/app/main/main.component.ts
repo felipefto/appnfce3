@@ -10,11 +10,15 @@ import {Router} from '@angular/router';
 export class MainComponent implements OnInit {
 
   electronService: ElectronService;
-  constructor(private router:Router) { }
+  constructor(private router: Router, private _electronservice: ElectronService) {
+    this.electronService = _electronservice;
+    this.electronService.ipcRenderer.on('openConfig', this.openConfig);
 
-  
+  }
   ngOnInit() {
-      
+  }
+  openConfig() {
+    alert('vai abrir configuração');
   }
 
 }

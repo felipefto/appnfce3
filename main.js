@@ -37,6 +37,7 @@ function createWindowLoad(){
         slashes: true
         
     }))    
+    win.webContents.openDevTools()    
     win.on('closed', () => {win = null;});
     
 }
@@ -74,7 +75,9 @@ function createWindowLogin () {
 function createWindowMain () {
     global.pagina = 'main';
     // Criar uma janela de navegação.
-    win = new BrowserWindow({width : largura, height : altura,frame: true})
+    
+    var withFrame = (process.platform === 'win32') ? false : true;
+    win = new BrowserWindow({width : largura, height : altura,frame: withFrame})
     // e carrega index.html do app.
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'dist/index.html'),
@@ -91,31 +94,32 @@ function createWindowMain () {
         // quando você deve excluir o elemento correspondente.
         win = null
     })       
-        /*
-    var menu = Menu.buildFromTemplate([
-        {
-            label:'Menu',
-            submenu:[
-                {label : 'Adjust Notification Value'},
-                {
-                    label : 'CoinMarketCap',
-                    click(){
-                        shell.openExternal('http://coinmarketcap.com')
-                    }
-                },
-                {type: 'separator'},
-                {label : 'Exit', click(){
-                    app.quit()
-                }}
-            
-            ]
-        },
-        {
-            label : "Info"
-
-        }            
-    ])
-    Menu.setApplicationMenu(menu);*/
+    if(withFrame){
+        var menu = Menu.buildFromTemplate([
+            {
+                label:'Menu',
+                submenu:[
+                    {
+                        label : 'Configurações', 
+                        click(){
+                            ipcMain.send('openConfig');
+                        }
+                    },
+                    {type: 'separator'},
+                    {label : 'Exit', click(){
+                        app.quit()
+                    }}
+                
+                ]
+            },
+            {
+                label : "Info"
+    
+            }            
+        ])
+        Menu.setApplicationMenu(menu);
+    }
+   
 }
 function createWindow(){
     //var db = openDatabase('dbTips', '1.0', 'Meu Primeiro banco', 2 *1024 *1024);    

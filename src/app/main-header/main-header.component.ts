@@ -12,8 +12,10 @@ export class MainHeaderComponent implements OnInit {
 
   alert: string;
   message: string;
-
-  constructor(private _electronService: ElectronService) { }
+  platform: string;
+  constructor(private _electronService: ElectronService) {
+    this.platform = _electronService.process.platform;
+   }
 
   ngOnInit() {
   }

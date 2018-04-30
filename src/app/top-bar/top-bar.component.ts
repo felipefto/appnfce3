@@ -8,11 +8,12 @@ import { ElectronService } from 'ngx-electron';
   styleUrls: ['./top-bar.component.css']
 })
 export class TopBarComponent implements OnInit {
+  
 
   constructor(public electronService: ElectronService) { }
 
   ngOnInit() {
-    alert(this.electronService.remote.process.plataform);
+    //alert(this.electronService.remote.process.plataform);
   }
 
 }

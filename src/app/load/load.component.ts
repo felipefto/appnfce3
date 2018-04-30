@@ -18,9 +18,6 @@ export class LoadComponent implements AfterViewInit {
   }
 
   ngAfterViewInit () {
-
-    alert(this.electronService.remote.process.plataform);
-
     var localIP = this.electronService.ipcRenderer.sendSync('getLocalIP', this.electronService.remote.getCurrentWindow().id);
 
     let isLoad = false;
@@ -31,7 +28,6 @@ export class LoadComponent implements AfterViewInit {
     } else {
         this.message = 'Verificando atualizações de banco de dados no servidor...';
         this.cdr.detectChanges();
-      
       let hasUpdate = true;
       //var hasUpdate = db.checkUpdate();
       if ( hasUpdate ) {
@@ -42,7 +38,7 @@ export class LoadComponent implements AfterViewInit {
     }
 
     if ( isLoad ) {
-      // this.electronService.ipcRenderer.send('createWindowLogin', this.electronService.remote.getCurrentWindow().id);
+      this.electronService.ipcRenderer.send('createWindowLogin', this.electronService.remote.getCurrentWindow().id);
     }
     console.log('Teste2' +  checkDB);
     /*
