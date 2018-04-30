@@ -5,6 +5,7 @@ const url = require('url')
 const shell = require('electron').shell
 const ipcMain = require('electron').ipcMain;
 
+
 const db = require('./db');
 
 
@@ -17,17 +18,19 @@ let altura;
 global.pagina = 'load';
 
 function createWindowLoad(){
-
-    db.select('select name , database_id FROM master.sys.databases');
+    debugger;
+    //db.select('select name , database_id FROM master.sys.databases');
     global.pagina = 'load';
-    win = new BrowserWindow({width: 120, height: 120, frame: false, resizable: false, show : false})
+    win = new BrowserWindow({width: 500, height: 170, frame: false, resizable: false, show : true})
     win.center();
     
-    
+    /*
     win.once('ready-to-show', () =>
     {
-        win.show()
-    });
+        //win.show()
+
+       
+    });*/
     win.loadURL(url.format({
         pathname: path.join(__dirname, 'dist/index.html'),
         protocol: 'file:',
@@ -195,26 +198,57 @@ ipcMain.on('showDialogChangeUser', (event, arg) =>{
     );
 });
 
-ipcMain.on('testeConnection', (event, arg) =>{
+ipcMain.on('checkDB', (event, arg) =>{
+    db.check().then( (a) => {
+        event.returnValue = a;        
+    });
+    
+});
 
-    var sql = require('mssql');
 
-    var config = {
-        user : 'sa',
-        passwaord: 'admin',
-        server: "P000167\\SQLEXPRESS",
-        port : 1433
+ipcMain.on('loadProgram', (event, arg) => {
+
+    var isLoad = false;
+    
+    var checkUpdate = false;
+    event.sender.send('updateProgressBar', "Procurando atualização de sistema...");    
+    //checkUpdate = checkHasUpdate();
+
+    if(checkUpdate){
+        event.sender.send('updateProgressBar', "Atualizando sistema...");    
     };
+    event.sender.send('updateProgressBar', "Verificando arquivos de banco de dados...");
+    var dbcheck = db.check();
+    if(!dbcheck){
+        event.sender.send('updateProgressBar', "Criando arquivos de banco de dados...");
+        var created = db.create();
+        if(created){
+            event.sender.send('updateProgressBar', "Verificando dados no servidor...");
+            var hasUpdate = true;
+            //var hasUpdate = db.checkUpdate();
+            if(hasUpdate){
+                event.sender.send('updateProgressBar', "Carregando banco de dados local...");
+                isLoad = true;
+            }
+        }
+    }else{
+        event.sender.send('updateProgressBar', "Verificando atualizações de banco de dados no servidor...");
+        var hasUpdate = true;
+        //var hasUpdate = db.checkUpdate();
+        if(hasUpdate){
+            event.sender.send('updateProgressBar', "Atualizando banco de dados local...");
+            isLoad = true;
+        }
+    }
+    if(isLoad){
+        createWindowLogin();
+        electron.BrowserWindow.fromId(arg).close();
+    }
 
-    sql.ConnectionPool(config, function(err){
-        
-        if(err) console.log(err);
-            
-        var request = new Request();
-            
-        var result = request.query('SELECT name, database_id FROM [master].[sys].[databases]');                
-        console.log(result);
-    });    
+
+});
+ipcMain.on('getLocalIP', (event, arg) =>{
+    event.returnValue = db.localIp;        
 });
 
 // Neste arquivo, você pode incluir o resto do seu aplicativo especifico do processo

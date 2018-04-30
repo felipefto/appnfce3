@@ -12,8 +12,7 @@ import { ConnectionPositionPair } from '@angular/cdk/overlay';
 export class LoginComponent implements OnInit {
 
   electronService: ElectronService;
-
-  constructor(private _electronService: ElectronService, private router: Router) {
+  constructor(private _electronService: ElectronService, private router: Router, private _ipc: ElectronService) {
     this.electronService = _electronService;
   }
   ngOnInit() {

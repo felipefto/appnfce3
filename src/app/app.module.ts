@@ -20,6 +20,7 @@ import { MainFooterComponent } from './main-footer/main-footer.component';
 import { MainHeaderComponent } from './main-header/main-header.component';
 import { Moment } from 'moment';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
+import { TopBarComponent } from './top-bar/top-bar.component';
 
 
 
@@ -45,7 +46,8 @@ const appRoutes: Routes = [
     LoadComponent,
     MainFooterComponent,
     MainHeaderComponent,
-    ConfirmDialogComponent
+    ConfirmDialogComponent,
+    TopBarComponent
   ],
   imports: [
     BrowserModule,
