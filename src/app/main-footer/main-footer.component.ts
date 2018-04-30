@@ -15,6 +15,7 @@ export class MainFooterComponent {
 
   now: any;
   data: any;
+  online: any;
   constructor() {
     this.updateTime();
     const interval = Observable.interval(1000);
@@ -27,6 +28,11 @@ export class MainFooterComponent {
   updateTime() {
     this.now = moment().format('HH:mm:ss');
     this.data = moment().format('DD/MM/YYYY');
+    this.online = this.getOnline();
+  }
+
+  getOnline(): string {
+    return  (navigator.onLine ? 'Online' : 'Offline');
   }
 
 }

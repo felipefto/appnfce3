@@ -19,7 +19,7 @@ export class LoadComponent implements AfterViewInit {
 
   ngAfterViewInit () {
 
-    alert(navigator.onLine);
+    alert(this.electronService.remote.process.plataform);
 
     var localIP = this.electronService.ipcRenderer.sendSync('getLocalIP', this.electronService.remote.getCurrentWindow().id);
 

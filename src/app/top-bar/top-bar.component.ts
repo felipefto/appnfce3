@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ElectronService } from 'ngx-electron';
+
 
 @Component({
   selector: 'app-top-bar',
@@ -7,9 +9,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class TopBarComponent implements OnInit {
 
-  constructor() { }
+  constructor(public electronService: ElectronService) { }
 
   ngOnInit() {
+    alert(this.electronService.remote.process.plataform);
   }
 
 }
