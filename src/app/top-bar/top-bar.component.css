@@ -1,10 +1,13 @@
 .title-bar{
     -webkit-app-region: drag;
-    height: 24px; 
-    background-color: royalblue;
-    padding: none;
-    margin: 0px; 
-
+    flex-grow: 0;
+    flex-shrink: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    height: 27px;
+    border-bottom: 1px solid black;
+    background: #3f51b5
 }
 .title {
     position: fixed;
@@ -13,7 +16,18 @@
 }
 .title-bar-btns {
     -webkit-app-region: no-drag;
-    position: fixed;
-    top: 0px;
-    right: 6px;
+    display: inline-block;
+    position: relative;
+    width: 45px;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: #a0a0a0;
+    background-color: transparent;
+    transition: background-color 0.25s ease;
+    line-height: 10px;
 }
