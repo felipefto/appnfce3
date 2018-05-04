@@ -25,18 +25,19 @@
 }
 
 .title {
-    font-size: 0;
-    left: 0;
-    opacity: .6;
-    padding: 4px 8px 3px;
-    pointer-events: none;
-    position: absolute;
-    top: 0;
+    margin: 0px 10px;    
+    align-self: center;
+    color: #d1d5da;
+    height: 16px;
+    opacity: 0.6;
+    fill: currentColor;
+    font-size: small;
 }
 .title-bar-btns {
     flex-grow: 0;
     flex-shrink: 0;
     margin-left: auto;
+    
 }
 .title-bar-btns > button {
     -webkit-app-region: no-drag;
@@ -69,3 +70,11 @@
     background-color: #e81123;
     color: #fff;
 }
+.user-btn {
+    width: auto !important; 
+    font-size: small !important;
+    vertical-align: top !important;
+}
+button:focus{
+    outline: none !important
+  }

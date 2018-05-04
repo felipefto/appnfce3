@@ -2,9 +2,22 @@
     <div class="resize-handle top"></div>
     <div class="resize-handle left"></div>
     <div class="title">
+        <i class="fa fa-shopping-basket mb-1"></i>        
         MiliumNFC-e
     </div>
     <div class="title-bar-btns">
+            <button class="user-btn" [matMenuTriggerFor]="menuuser">
+                &nbsp;{{userName}}
+                <i class="fa fa-user" ></i>
+                &nbsp;
+            </button>
+            <mat-menu #menuuser="matMenu"  [overlapTrigger]="false">
+                <button mat-menu-item (click)="changeUser()">
+                    <mat-icon class="fa fa-sign-out"></mat-icon>
+                    <span>Trocar Usuário</span>
+                </button>
+            </mat-menu>
+
             <button (click)="minimize()" class="min-btn">
                 <svg aria-hidden="true" version="1.1" width="10" height="10"><path d="M 0,5 10,5 10,6 0,6 Z"></path></svg>
             </button>

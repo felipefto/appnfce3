@@ -16,6 +16,7 @@ let largura;
 let altura;
 
 global.pagina = 'load';
+global.userName = '';
 
 function createWindowLoad(){
     debugger;
@@ -42,10 +43,10 @@ function createWindowLoad(){
     
 }
 
-function createWindowLogin () {
+function createWindowLogin (visible) {
 // Criar uma janela de navegação.
     global.pagina = 'login';
-    win = new BrowserWindow({width: 800, height: 540, frame: false, resizable: false})    
+    win = new BrowserWindow({width: 800, height: 540, frame: false, resizable: false, show : visible})    
     win.center();    
     //if(localStorage.getItem('logado') === "true"){
         //win.close();
@@ -104,7 +105,16 @@ function createWindowMain () {
         });
         if(response === 0){
             e.preventDefault();
+        }else{
+            var windows = electron.BrowserWindow.getAllWindows();
+
+            windows.forEach(element => {
+                if ( element.id !== e.sender.id ){
+                    element.show();
+                };
+            });
         }
+        
     })
    
     //win.setMenu(null) ;
@@ -197,7 +207,7 @@ ipcMain.on('createWindowMain', (event, arg) => {
     
 });
 ipcMain.on('createWindowLogin', (event, arg) => {
-    createWindowLogin();
+    createWindowLogin(true);
     electron.BrowserWindow.fromId(arg).close();
 })
 ipcMain.on('closeApp', (event, arg) => {
@@ -209,21 +219,15 @@ ipcMain.on('showDialogCloseApp', (event, arg) =>{
 });
 
 ipcMain.on('showDialogChangeUser', (event, arg) =>{
-    electron.dialog.showMessageBox(electron.BrowserWindow.fromId(arg), 
-    {
-        type: 'question', 
-        title : "Sair", 
-        message: 'Deseja sair do sistema?', 
-        buttons: ['Cancel', 'Ok'] 
-    },
-    (response) => {
-        console.log(response);
-        if(response === 1){
-            createWindowLogin();
-            electron.BrowserWindow.fromId(arg).close();            
-        }
-    }    
-    );
+    
+    createWindowLogin(false);
+    electron.BrowserWindow.fromId(arg).close();   
+    
+});
+
+ipcMain.on('login', (event, arg) => {
+    global.userName = arg.userName;
+    event.returnValue = true;
 });
 
 ipcMain.on('checkDB', (event, arg) =>{
@@ -269,7 +273,7 @@ ipcMain.on('loadProgram', (event, arg) => {
         }
     }
     if(isLoad){
-        createWindowLogin();
+        createWindowLogin(true);
         electron.BrowserWindow.fromId(arg).close();
     }
 
