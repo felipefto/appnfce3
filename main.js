@@ -17,6 +17,7 @@ let altura;
 
 global.pagina = 'load';
 global.userName = '';
+global.online = false;
 
 function createWindowLoad(){
     debugger;
@@ -38,7 +39,7 @@ function createWindowLoad(){
         slashes: true
         
     }))    
-    //win.webContents.openDevTools()    
+    win.webContents.openDevTools()    
     win.on('closed', () => {win = null;});
     
 }
@@ -237,6 +238,9 @@ ipcMain.on('checkDB', (event, arg) =>{
     
 });
 
+ipcMain.on('setOnline', (event, arg) => {
+    global.online = arg.onLine;
+})
 
 ipcMain.on('loadProgram', (event, arg) => {
 

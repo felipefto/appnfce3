@@ -3,6 +3,9 @@ import { Router } from '@angular/router';
 
 import { ElectronService } from 'ngx-electron';
 import { delay } from 'q';
+import { tick, fakeAsync } from '@angular/core/testing';
+import { timer } from 'rxjs';
+
 
 @Component({
   selector: 'app-load',
@@ -19,51 +22,50 @@ export class LoadComponent implements AfterViewInit {
     this.message = 'Iniciando aplicativo....';
   }
 
-  ngAfterViewInit () {
-    
-    setTimeout(() => {
-
-      var localIP = this.electronService.ipcRenderer.sendSync('getLocalIP', this.electronService.remote.getCurrentWindow().id);
-
-      let isLoad = false;
-      const checkDB = this.electronService.ipcRenderer.sendSync('checkDB', this.electronService.remote.getCurrentWindow().id);
-      
-      if ( !checkDB ) {
-        this.message = 'Criando arquivos de banco de dados...';
-        this.cdr.detectChanges();
-      } else {
-          setTimeout(() => {
-
-            this.message = 'Verificando atualizações de banco de dados no servidor...';
-            this.cdr.detectChanges();
-            let hasUpdate = true;
-            
-            //var hasUpdate = db.checkUpdate();
-            if ( hasUpdate ) {
-              
-              this.message = 'Atualizando banco de dados local com ip (' + localIP.toString()  + ')...';
-              this.cdr.detectChanges();
-              isLoad = true;
-            }
-            
-          }, 1000);
-         
-      }
-      setTimeout(() => {
-        if ( isLoad ) {
-          this.electronService.ipcRenderer.send('createWindowLogin', this.electronService.remote.getCurrentWindow().id);
+  async ngAfterViewInit () {
+    console.time('teste');
+    await delay(3000);
+    var Online = false;
+    var localIP = this.electronService.ipcRenderer.sendSync('getLocalIP', this.electronService.remote.getCurrentWindow().id);
+    let isLoad = false;
+    const checkDB = this.electronService.ipcRenderer.sendSync('checkDB', this.electronService.remote.getCurrentWindow().id);
+    if ( !checkDB ) {
+      console.log('6');
+      this.message = 'Criando arquivos de banco de dados...';
+      await delay(3000);
+      this.cdr.detectChanges();
+    } else {
+      console.log('7');
+      for (let index = 1; index <= 3; index++) {
+        this.message = 'Tentativa de conexão ' + index.toString() + '/3 .';
+        Online = navigator.onLine;
+        this.electronService.ipcRenderer.send('setOnline', navigator);
+        await delay(1000);
+        if ( Online ) {
+          this.message = 'Aplicativo conectado com o servidor local.';
+          this.cdr.detectChanges();
+          break;
         }
-      }, 2000);
-      
-          
-        
-    }, 500);
-   
-    
-    /*
-    setTimeout(() => {
-    }, 2000);*/
+      }
+      if ( Online ) {
+        this.message = 'Verificando atualizações de banco de dados no servidor...';
+        await delay(3000);
+        this.cdr.detectChanges();
+        let hasUpdate = true;
 
+        // var hasUpdate = db.checkUpdate();
+        if ( hasUpdate ) {
+
+          this.message = 'Atualizando banco de dados local com ip (' + localIP.toString()  + ')...';
+          await delay(3000);
+          this.cdr.detectChanges();
+          isLoad = true;
+        }
+      }
+      if ( isLoad ) {
+        this.electronService.ipcRenderer.send('createWindowLogin', this.electronService.remote.getCurrentWindow().id);
+      }
+    }
 
 /*
     localStorage.setItem('loaded', 'true');
@@ -76,6 +78,10 @@ export class LoadComponent implements AfterViewInit {
 
   updateProgressBar() {
 
+  }
+
+  async delay(ms: number) {
+    return new Promise( resolve => setTimeout(resolve, ms) );
   }
 
 }
