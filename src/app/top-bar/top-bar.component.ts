@@ -49,8 +49,8 @@ export class TopBarComponent implements OnInit {
   close() {
     this.electronService.ipcRenderer.send('showDialogCloseApp', this.electronService.remote.getCurrentWindow().id);
   }
-  changeUser() {
-
+  changeUser(): void {
+    this.electronService.ipcRenderer.send('showDialogChangeUser', this.electronService.remote.getCurrentWindow().id);
   }
   minimize() {
     this.electronService.ipcRenderer.send('minimize', this.electronService.remote.getCurrentWindow().id);
